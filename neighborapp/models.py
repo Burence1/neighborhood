@@ -5,7 +5,6 @@ from django.db import models
 class Neighborhood(models.Model):
   name = models.CharField(max_length=50)
   location = models.CharField(max_length=50)
-  occupants_count = models.IntegerField()
 
   def __str__(self):
     return self.name
@@ -38,7 +37,6 @@ class User(models.Model):
 
   def delete_user(self):
     self.delete()
-
 
 class Business(models.Model):
   name=models.CharField(max_length=50)
