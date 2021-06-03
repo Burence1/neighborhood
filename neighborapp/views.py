@@ -26,7 +26,15 @@ class NeighborhoodList(APIView):
     serializers=NeighborhoodSerializer(data=request.data)
     if serializers.is_valid():
       serializers.save()
-      return Response(serializers.data, status=status.HTTP_200_OK)
+      neighborhood=serializers.data
+      response = {
+          'data': {
+              'neighborhood': dict(neighborhood),
+              'status': 'success',
+              'message': 'neighborhood created successfully',
+          }
+      }
+      return Response(response, status=status.HTTP_200_OK)
     return Response(serializers.errors , status= status.HTTP_400_BAD_REQUEST)
 
   def put(self, request, pk, format=None):
@@ -34,7 +42,15 @@ class NeighborhoodList(APIView):
     serializers = NeighborhoodSerializer(neighborhood, request.data)
     if serializers.is_valid():
       serializers.save()
-      return Response(serializers.data)
+      neighbor=serializers.data
+      response = {
+          'data': {
+              'neighborhood': dict(neighbor),
+              'status': 'success',
+              'message': 'neighborhood updated successfully',
+          }
+      }
+      return Response(response)
     else:
       return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -59,7 +75,15 @@ class BusinessList(APIView):
     serializers=BusinessSerializers(data=request.data)
     if serializers.is_valid():
       serializers.save()
-      return Response(serializers.data, status=status.HTTP_200_OK)
+      business=serializers.data
+      response = {
+          'data': {
+              'business': dict(business),
+              'status': 'success',
+              'message': 'business created successfully',
+          }
+      }
+      return Response(response, status=status.HTTP_200_OK)
     return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
   def put(self, request, pk, format=None):
@@ -67,7 +91,15 @@ class BusinessList(APIView):
     serializers = BusinessSerializers(business, request.data)
     if serializers.is_valid():
       serializers.save()
-      return Response(serializers.data)
+      business_list=serializers.data
+      response = {
+          'data': {
+              'business': dict(business_list),
+              'status': 'success',
+              'message': 'business updated successfully',
+          }
+      }
+      return Response(response)
     else:
       return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -83,8 +115,8 @@ class UserList(APIView):
     except User.DoesNotExist:
         raise Http404()
 
-  def get(self,request,pk,format=None):
-    users=self.get_users(pk)
+  def get(self,request,format=None):
+    users=User.objects.all()
     serializers=UserSerializer(users, many=True)
     return Response(serializers.data)
 
@@ -100,18 +132,24 @@ class UserList(APIView):
           'status':'success',
           'message':'user created successfully',
         }
-
       }
-
       return Response(response, status=status.HTTP_200_OK)
     return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
   def put(self,request,pk,format=None):
-    users=User.objects.get(pk-pk)
+    users=self.get_users(pk)
     serializers=UserSerializer(users,request.data)
     if serializers.is_valid():
       serializers.save()
-      return Response(serializers.data)
+      users_list=serializers.data
+      response = {
+          'data': {
+              'users': dict(users_list),
+              'status': 'success',
+              'message': 'user updated successfully',
+          }
+      }
+      return Response(response, status=status.HTTP_200_OK)
     else:
       return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
