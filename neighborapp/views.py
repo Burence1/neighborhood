@@ -1,4 +1,5 @@
 from os import stat
+from django.core.checks import messages
 from django.shortcuts import render
 from .serializers import *
 from .models import *
@@ -6,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.http import Http404
+from django.http import response
 
 # Create your views here.
 class NeighborhoodList(APIView):
@@ -13,7 +15,7 @@ class NeighborhoodList(APIView):
     try:
         return Neighborhood.objects.get(pk=pk)
     except Neighborhood.DoesNotExist:
-        return Http404
+        return Http404()
 
   def get(self,request,format=None):
     neighborhood= Neighborhood.objects.all()
@@ -28,8 +30,8 @@ class NeighborhoodList(APIView):
     return Response(serializers.errors , status= status.HTTP_400_BAD_REQUEST)
 
   def put(self, request, pk, format=None):
-    users = self.get_neighborhood(pk)
-    serializers = NeighborhoodSerializer(users, request.data)
+    neighborhood = self.get_neighborhood(pk)
+    serializers = NeighborhoodSerializer(neighborhood, request.data)
     if serializers.is_valid():
       serializers.save()
       return Response(serializers.data)
@@ -37,8 +39,8 @@ class NeighborhoodList(APIView):
       return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
   def delete(self, request, pk, format=None):
-    users = self.get_neighborhood(pk)
-    users.delete()
+    neighborhood = self.get_neighborhood(pk)
+    neighborhood.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 class BusinessList(APIView):
@@ -46,7 +48,7 @@ class BusinessList(APIView):
     try:
         return Business.objects.get(pk=pk)
     except Business.DoesNotExist:
-        return Http404
+        return Http404()
 
   def get(self, request,format=None):
     business=Business.objects.all()
@@ -61,8 +63,8 @@ class BusinessList(APIView):
     return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
   def put(self, request, pk, format=None):
-    users = self.get_business(pk)
-    serializers = BusinessSerializers(users, request.data)
+    business = self.get_business(pk)
+    serializers = BusinessSerializers(business, request.data)
     if serializers.is_valid():
       serializers.save()
       return Response(serializers.data)
@@ -70,8 +72,8 @@ class BusinessList(APIView):
       return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
   def delete(self, request, pk, format=None):
-    users = self.get_business(pk)
-    users.delete()
+    business = self.get_business(pk)
+    business.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 class UserList(APIView):
@@ -79,10 +81,10 @@ class UserList(APIView):
     try:
         return User.objects.get(pk=pk)
     except User.DoesNotExist:
-        return Http404
+        raise Http404()
 
-  def get(self,request,format=None):
-    users=User.objects.all()
+  def get(self,request,pk,format=None):
+    users=self.get_users(pk)
     serializers=UserSerializer(users, many=True)
     return Response(serializers.data)
 
@@ -90,11 +92,22 @@ class UserList(APIView):
     serializers=UserSerializer(data=request.data)
     if serializers.is_valid():
       serializers.save()
-      return Response(serializers.data, status=status.HTTP_200_OK)
+
+      users=serializers.data
+      response={
+        'data':{
+          'users':dict(users),
+          'status':'success',
+          'message':'user created successfully',
+        }
+
+      }
+
+      return Response(response, status=status.HTTP_200_OK)
     return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
   def put(self,request,pk,format=None):
-    users=self.get_users(pk)
+    users=User.objects.get(pk-pk)
     serializers=UserSerializer(users,request.data)
     if serializers.is_valid():
       serializers.save()
