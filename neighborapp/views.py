@@ -42,10 +42,10 @@ class NeighborhoodList(APIView):
     serializers = NeighborhoodSerializer(neighborhood, request.data)
     if serializers.is_valid():
       serializers.save()
-      neighbor=serializers.data
+      neighborhood=serializers.data
       response = {
           'data': {
-              'neighborhood': dict(neighbor),
+              'neighborhood': dict(neighborhood),
               'status': 'success',
               'message': 'neighborhood updated successfully',
           }
