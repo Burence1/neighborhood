@@ -28,6 +28,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:4200',
+)
+
+
 
 # Application definition
 
@@ -41,8 +48,16 @@ INSTALLED_APPS = [
     'neighborapp.apps.NeighborappConfig',
     'rest_framework',
     'cloudinary',
+    'rest_framework.authtoken',
+    'corsheaders',
 
 ]
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework.authentication.TokenAuthentication',
+#     )
+# }
 
 cloudinary.config(
     cloud_name="burens",
@@ -51,6 +66,7 @@ cloudinary.config(
 )
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

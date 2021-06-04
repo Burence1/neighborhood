@@ -1,3 +1,4 @@
+from os import name
 from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
@@ -71,8 +72,8 @@ class Business(models.Model):
     self.delete()
 
   @classmethod
-  def find_business(cls, business_id):
-    return cls.objects.filter(id=business_id)
+  def find_business(cls, name):
+    return cls.objects.filter(business_name__icontains=name)
 
   @classmethod
   def update_business(cls, id, name):

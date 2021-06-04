@@ -20,5 +20,8 @@ urlpatterns=[
   path('api/delete/users/<int:pk>/',views.UserList.as_view(),name='delete_users'),
   re_path('api/delete/hood/(?P<pk>[0-9]+)/',views.NeighborhoodList.as_view(),name='delete_neighbors'),
   path('api/delete/business/<int:pk>/',views.BusinessList.as_view(),name='delete_business'),
-  path('api/delete/post/<int:pk>/',views.PostList.as_view(),name='delete_post')
+  path('api/delete/post/<int:pk>/',views.PostList.as_view(),name='delete_post'),
+
+  #search urls
+  path('api/business/list/',views.BusinessSearch.as_view(),name='search'),
 ]
