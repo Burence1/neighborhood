@@ -11,7 +11,8 @@ from django.http import response
 
 # Create your views here.
 class NeighborhoodList(APIView):
-  def get_neighborhood(self, pk):
+  serializer_class=NeighborhoodSerializer
+  def get_neighborhood(self,pk):
     try:
         return Neighborhood.objects.get(pk=pk)
     except Neighborhood.DoesNotExist:
@@ -19,11 +20,11 @@ class NeighborhoodList(APIView):
 
   def get(self,request,format=None):
     neighborhood= Neighborhood.objects.all()
-    serializers=NeighborhoodSerializer(neighborhood, many=True)
+    serializers=self.serializer_class(neighborhood, many=True)
     return Response(serializers.data)
 
   def post(self,request,format=None):
-    serializers=NeighborhoodSerializer(data=request.data)
+    serializers=self.serializer_class(data=request.data)
     if serializers.is_valid():
       serializers.save()
       neighborhood=serializers.data
@@ -39,7 +40,7 @@ class NeighborhoodList(APIView):
 
   def put(self, request, pk, format=None):
     neighborhood = self.get_neighborhood(pk)
-    serializers = NeighborhoodSerializer(neighborhood, request.data)
+    serializers = self.serializer_class(neighborhood, request.data)
     if serializers.is_valid():
       serializers.save()
       neighborhood=serializers.data
@@ -57,10 +58,10 @@ class NeighborhoodList(APIView):
   def delete(self, request, pk, format=None):
     neighborhood = self.get_neighborhood(pk)
     neighborhood.delete()
-    
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 class BusinessList(APIView):
+  serializer_class=BusinessSerializers
   def get_business(self, pk):
     try:
         return Business.objects.get(pk=pk)
@@ -69,11 +70,28 @@ class BusinessList(APIView):
 
   def get(self, request,format=None):
     business=Business.objects.all()
-    serializers=BusinessSerializers(business, many=True)
+    serializers=self.serializer_class(business, many=True)
     return Response(serializers.data)
 
+  def put(self, request, pk, format=None):
+    business = self.get_business(pk)
+    serializers = self.serializer_class(business, request.data)
+    if serializers.is_valid():
+      serializers.save()
+      business_list = serializers.data
+      response = {
+          'data': {
+              'business': dict(business_list),
+              'status': 'success',
+              'message': 'business updated successfully',
+          }
+      }
+      return Response(response)
+    else:
+      return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
   def post(self, request, format=None):
-    serializers=BusinessSerializers(data=request.data)
+    serializers=self.serializer_class(data=request.data)
     if serializers.is_valid():
       serializers.save()
       business=serializers.data
@@ -86,23 +104,6 @@ class BusinessList(APIView):
       }
       return Response(response, status=status.HTTP_200_OK)
     return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
-
-  def put(self, request, pk, format=None):
-    business = self.get_business(pk)
-    serializers = BusinessSerializers(business, request.data)
-    if serializers.is_valid():
-      serializers.save()
-      business_list=serializers.data
-      response = {
-          'data': {
-              'business': dict(business_list),
-              'status': 'success',
-              'message': 'business updated successfully',
-          }
-      }
-      return Response(response)
-    else:
-      return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
   def delete(self, request, pk, format=None):
     business = self.get_business(pk)
@@ -193,6 +194,7 @@ class UserList(APIView):
 
 
 class PostList(APIView):
+  serializer_class=PostSerializer
   def get_post(self, pk):
     try:
         return Post.objects.get(pk=pk)
@@ -201,11 +203,11 @@ class PostList(APIView):
 
   def get(self, request, format=None):
     post = Post.objects.all()
-    serializers = PostSerializer(post, many=True)
+    serializers = self.serializer_class(post, many=True)
     return Response(serializers.data)
 
   def post(self, request, format=None):
-    serializers = PostSerializer(data=request.data)
+    serializers = self.serializer_class(data=request.data)
     if serializers.is_valid():
       serializers.save()
 
@@ -222,7 +224,7 @@ class PostList(APIView):
 
   def put(self, request, pk, format=None):
     post = self.get_post(pk)
-    serializers = PostSerializer(post, request.data)
+    serializers = self.serializer_class(post, request.data)
     if serializers.is_valid():
       serializers.save()
       post_data = serializers.data

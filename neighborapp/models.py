@@ -57,7 +57,7 @@ class Profile(models.Model):
 class Business(models.Model):
   business_name=models.CharField(max_length=50)
   business_desc=models.TextField()
-  user=models.ForeignKey(Profile,on_delete=models.CASCADE,related_name='business_user',null=True)
+  profile=models.ForeignKey(Profile,on_delete=models.CASCADE,related_name='business_user',null=True)
   business_email=models.EmailField()
   neighborhood=models.ForeignKey(Neighborhood,related_name='business_hood',on_delete=models.CASCADE,null=True)
 
@@ -83,7 +83,7 @@ class Post(models.Model):
   post_name=models.CharField(max_length=100)
   post_content=models.TextField()
   pub_date=models.DateTimeField(auto_now_add=True)
-  user=models.ForeignKey(Profile,on_delete=models.CASCADE, related_name='post',null=True)
+  profile=models.ForeignKey(Profile,on_delete=models.CASCADE, related_name='post',null=True)
   hood=models.ForeignKey(Neighborhood,on_delete=models.CASCADE,related_name='post_hood',null=True)
 
   def __str__(self):
