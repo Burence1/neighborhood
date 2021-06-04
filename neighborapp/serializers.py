@@ -1,7 +1,8 @@
 from django.db import models
 from django.db.models import fields
-from .models import User,Neighborhood,Business
+from .models import Profile, User,Neighborhood,Business,Post
 from rest_framework import serializers
+from django import forms
 
 
 class BusinessSerializers(serializers.ModelSerializer):
@@ -9,45 +10,31 @@ class BusinessSerializers(serializers.ModelSerializer):
     model = Business
     fields = "__all__"
 
-    # def create(self,validated_data):
-    #   business=Business.objects.create(
-    #     name=validated_data['name'],
-    #     email=validated_data['email'],
-    #     neighborhood=validated_data['neighborhood'],
-    #     user=validated_data['user']
-    #   )
-    #   business.save()
-    #   return business
-
 class UserSerializer(serializers.ModelSerializer):
-  business=BusinessSerializers(many=True,read_only=True)
+  email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
   class Meta:
     model = User
+    fields = ['username','email','password']
+
+
+class PostSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Post
     fields = "__all__"
 
-    # def create(self,validated_data):
-    #   user=User.objects.create(
-    #     name=validated_data['name'],
-    #     email=validated_data['email'],
-    #     business=validated_data['business']
-    #   )
-    #   user.save()
-    #   return user
+class ProfileSerializer(serializers.ModelSerializer):
+  user=UserSerializer(read_only=True,many=False)
+  business = BusinessSerializers(many=True, read_only=True)
 
-class NeighborhoodSerializer(serializers.ModelSerializer):
-  users=UserSerializer(many=True,read_only=True)
-  business=BusinessSerializers(many=True,read_only=True)
   class Meta:
-    model = Neighborhood
+    model = Profile
     fields="__all__"
 
-    # def create(self,validate_data):
-    #   neighbor=Neighborhood.objects.create(
-    #     name=validate_data['name'],
-    #     location=validate_data['location'],
-    #     users=validate_data['users'],
-    #     business=validate_data['business'],
-    #   )
 
-    #   neighbor.save()
-    #   return neighbor
+class NeighborhoodSerializer(serializers.ModelSerializer):
+  profile = ProfileSerializer(many=True, read_only=True)
+  business = BusinessSerializers(many=True, read_only=True)
+
+  class Meta:
+    model = Neighborhood
+    fields = '__all__'
