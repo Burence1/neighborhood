@@ -253,8 +253,15 @@ class PostList(APIView):
     post.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
-class BusinessSearch(generics.ListAPIView):
-  queryset=Business.objects.all()
-  serializer_class=BusinessSerializers
-  filter_backends=(filters.SearchFilter)
-  search_fields=("business_name")
+# class BusinessSearch(generics.ListAPIView):
+#   queryset=Business.objects.all()
+#   serializer_class=BusinessSerializers
+#   filter_backends=(filters.SearchFilter)
+#   search_fields=("business_name")
+
+
+class BusinessSearchList(APIView):
+    def get(self, request, name):
+        business = Business.find_business(name)
+        serializers = BusinessSerializers(business, many=True)
+        return Response(serializers.data)

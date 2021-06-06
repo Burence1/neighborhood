@@ -24,5 +24,5 @@ urlpatterns=[
   path('api/delete/post/<int:pk>/',views.PostList.as_view(),name='delete_post'),
 
   #search urls
-  path('api/business/list/',views.BusinessSearch.as_view(),name='search'),
+  path('api/business/list/<name>',views.BusinessSearchList.as_view(),name='search'),
 ]
