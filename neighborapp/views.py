@@ -7,10 +7,13 @@ from .models import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from django.http import Http404
+from django.http import Http404,QueryDict
 from django.http import response
 from rest_framework import generics
 from rest_framework import filters
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+
 
 # Create your views here.
 class NeighborhoodList(APIView):
@@ -92,9 +95,12 @@ class BusinessList(APIView):
       return Response(response)
     else:
       return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
-
+  
+  @csrf_exempt
   def post(self, request, format=None):
+    print(request.data)
     serializers=self.serializer_class(data=request.data)
+    print(serializers)
     if serializers.is_valid():
       serializers.save()
       business=serializers.data

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.urls import path, re_path
 
 
+
 urlpatterns=[
   #post and get urls
   path('api/hood/',views.NeighborhoodList.as_view(),name='neighbor'),
