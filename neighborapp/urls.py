@@ -1,6 +1,7 @@
 from . import views
 from django.conf import settings
 from django.urls import path, re_path
+from django.conf.urls.static import static
 from rest_framework.authtoken.views import ObtainAuthToken
 
 
@@ -35,3 +36,7 @@ urlpatterns=[
   path('api/single-business/<int:pk>/',views.singleBusiness.as_view()),
   path('api/single-post/<int:pk>/',views.singlePost.as_view()),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
