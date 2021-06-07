@@ -1,8 +1,8 @@
 # NeighborHood
-#### {A python-django hood backedn application}, {07-June-2021}
+#### {A python-django hood backend application}, {07-June-2021}
 #### {By Burens Omondi}
 ## Description
-{}
+{A django-rest-framework developed backend application}
 
 ## Setup/Installation
 * Navigate to the project repository via https://github.com/Burence1/neighborhood.git
