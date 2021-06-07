@@ -1,6 +1,7 @@
 from . import views
 from django.conf import settings
 from django.urls import path, re_path
+from rest_framework.authtoken.views import ObtainAuthToken
 
 
 
@@ -23,6 +24,14 @@ urlpatterns=[
   path('api/delete/business/<int:pk>/',views.BusinessList.as_view(),name='delete_business'),
   path('api/delete/post/<int:pk>/',views.PostList.as_view(),name='delete_post'),
 
+
   #search urls
   path('api/business/list/<name>',views.BusinessSearchList.as_view(),name='search'),
+  # path('loginuser/', views.LoginUser.as_view(), name="loginuser"),
+  path('authlogin/', ObtainAuthToken.as_view(), name="authlogin"),
+
+  #singleitems
+  path('api/single-hood/<int:pk>/',views.singleHood.as_view()),
+  path('api/single-business/<int:pk>/',views.singleBusiness.as_view()),
+  path('api/single-post/<int:pk>/',views.singlePost.as_view()),
 ]

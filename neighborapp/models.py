@@ -10,7 +10,7 @@ class Neighborhood(models.Model):
   name = models.CharField(max_length=50)
   hood_desc=models.TextField()
   location = models.CharField(max_length=50)
-  occupants_count=models.IntegerField(default=0)
+  image=CloudinaryField('hood image',null=True)
 
   def __str__(self):
     return self.name
@@ -58,6 +58,7 @@ class Profile(models.Model):
 class Business(models.Model):
   business_name=models.CharField(max_length=50)
   business_desc=models.TextField()
+  image=CloudinaryField('business image',null=True)
   profile=models.ForeignKey(Profile,on_delete=models.CASCADE,related_name='business_user',null=True)
   business_email=models.EmailField()
   neighborhood=models.ForeignKey(Neighborhood,related_name='business_hood',on_delete=models.CASCADE,null=True)

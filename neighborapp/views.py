@@ -13,6 +13,8 @@ from rest_framework import generics
 from rest_framework import filters
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -23,6 +25,11 @@ class NeighborhoodList(APIView):
         return Neighborhood.objects.get(pk=pk)
     except Neighborhood.DoesNotExist:
         return Http404()
+  
+  def single_hood(self, request, pk, format=None):
+    post = self.get_neighborhood(pk)
+    serializers = self.serializer_class(post)
+    return Response(serializers.data)
 
   def get(self,request,format=None):
     neighborhood= Neighborhood.objects.all()
@@ -66,6 +73,20 @@ class NeighborhoodList(APIView):
     neighborhood.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+class singleHood(APIView):
+  serializer_class = NeighborhoodSerializer
+
+  def get_neighborhood(self, pk):
+    try:
+        return Neighborhood.objects.get(pk=pk)
+    except Neighborhood.DoesNotExist:
+        return Http404()
+
+  def get(self, request, pk, format=None):
+    post = self.get_neighborhood(pk)
+    serializers = self.serializer_class(post)
+    return Response(serializers.data)
+
 class BusinessList(APIView):
   serializer_class=BusinessSerializers
   def get_business(self, pk):
@@ -73,6 +94,11 @@ class BusinessList(APIView):
         return Business.objects.get(pk=pk)
     except Business.DoesNotExist:
         return Http404()
+  
+  def single_business(self, request, pk, format=None):
+    post = self.get_business(pk)
+    serializers = self.serializer_class(post)
+    return Response(serializers.data)
 
   def get(self, request,format=None):
     business=Business.objects.all()
@@ -119,6 +145,20 @@ class BusinessList(APIView):
     business.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+class singleBusiness(APIView):
+  serializer_class = BusinessSerializers
+
+  def get_business(self, pk):
+    try:
+        return Business.objects.get(pk=pk)
+    except Business.DoesNotExist:
+        return Http404()
+
+  def get(self, request, pk, format=None):
+    post = self.get_business(pk)
+    serializers = self.serializer_class(post)
+    return Response(serializers.data)
+
 class ProfileList(APIView):
   serializer_class=ProfileSerializer
 
@@ -127,6 +167,11 @@ class ProfileList(APIView):
         return Profile.objects.get(pk=pk)
     except Profile.DoesNotExist:
         raise Http404()
+
+  def single_profile(self, request, pk, format=None):
+    post = self.get_profile(pk)
+    serializers = self.serializer_class(post)
+    return Response(serializers.data)
   
   def get(self, request, format=None):
     profile = Profile.objects.all()
@@ -157,6 +202,11 @@ class UserList(APIView):
         return User.objects.get(pk=pk)
     except User.DoesNotExist:
         raise Http404()
+
+  def single_user(self, request, pk, format=None):
+    post = self.get_users(pk)
+    serializers = self.serializer_class(post)
+    return Response(serializers.data)
 
   def get(self,request,format=None):
     users=User.objects.all()
@@ -210,6 +260,11 @@ class PostList(APIView):
     except Post.DoesNotExist:
         raise Http404()
 
+  def single_post(self, request,pk, format=None):
+    post = self.get_post(pk)
+    serializers = self.serializer_class(post)
+    return Response(serializers.data)
+
   def get(self, request, format=None):
     post = Post.objects.all()
     serializers = self.serializer_class(post, many=True)
@@ -253,12 +308,18 @@ class PostList(APIView):
     post.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
-# class BusinessSearch(generics.ListAPIView):
-#   queryset=Business.objects.all()
-#   serializer_class=BusinessSerializers
-#   filter_backends=(filters.SearchFilter)
-#   search_fields=("business_name")
+class singlePost(APIView):
+  serializer_class = PostSerializer
+  def get_post(self, pk):
+      try:
+          return Post.objects.get(pk=pk)
+      except Post.DoesNotExist:
+          raise Http404()
 
+  def get(self, request, pk, format=None):
+    post = self.get_post(pk)
+    serializers = self.serializer_class(post)
+    return Response(serializers.data)
 
 class BusinessSearchList(APIView):
     def get(self, request, name):
